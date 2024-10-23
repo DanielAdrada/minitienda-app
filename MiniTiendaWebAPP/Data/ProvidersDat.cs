@@ -6,34 +6,19 @@ using System.Web;
 
 namespace Data
 {
-    public class CategoryDat
+    public class ProvidersDat
     {
         Persistence objPer = new Persistence();
 
-        //Metodo para mostrar todas las Categorias
-        public DataSet showCategories()
+        //Metodo para mostrar unicamente el id y la descripcion de los Provedores, en el DropDownList
+        public DataSet showProvidersDDL()
         {
             MySqlDataAdapter objAdapter = new MySqlDataAdapter();
             DataSet objData = new DataSet();
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectCategory";
-            objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objAdapter.SelectCommand = objSelectCmd;
-            objAdapter.Fill(objData);
-            objPer.closeConnection();
-            return objData;
-        }
-        //Metodo para mostrar unicamente el id y la descripcion
-        public DataSet showCategoriesDDL()
-        {
-            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
-            DataSet objData = new DataSet();
-
-            MySqlCommand objSelectCmd = new MySqlCommand();
-            objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spSelectCategoryDDL";
+            objSelectCmd.CommandText = "spSelectProvidersDDL";
             objSelectCmd.CommandType = CommandType.StoredProcedure;
             objAdapter.SelectCommand = objSelectCmd;
             objAdapter.Fill(objData);
@@ -41,48 +26,34 @@ namespace Data
             return objData;
         }
 
-        //Metodo para guardar una nueva Categoria
-        public bool saveCategory(string _description, DateTime _fecha)
+        //Metodo para mostrar los Provedores
+        public DataSet showProviders()
         {
-            bool executed = false;
-            int row;
+            MySqlDataAdapter objAdapter = new MySqlDataAdapter();
+            DataSet objData = new DataSet();
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spInsertCategory"; //nombre del procedimiento almacenado
+            objSelectCmd.CommandText = "spSelectProviders";
             objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objSelectCmd.Parameters.Add("p_description", MySqlDbType.VarString).Value = _description;
-            objSelectCmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = _fecha;
-
-            try
-            {
-                row = objSelectCmd.ExecuteNonQuery();
-                if (row == 1)
-                {
-                    executed = true;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error " + e.ToString());
-            }
+            objAdapter.SelectCommand = objSelectCmd;
+            objAdapter.Fill(objData);
             objPer.closeConnection();
-            return executed;
-
+            return objData;
         }
 
-        //Metodo para actualizar una Categoria
-        public bool updateCategory(int _idCategory, string _description)
+        //Metodo para guardar un nuevo Proveedor
+        public bool saveProvider(string _nit, string _name)
         {
             bool executed = false;
             int row;
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spUpdateCategory"; //nombre del procedimiento almacenado
+            objSelectCmd.CommandText = "spInsertProvider"; //nombre del procedimiento almacenado
             objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objSelectCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _idCategory;
-            objSelectCmd.Parameters.Add("p_description", MySqlDbType.VarString).Value = _description;
+            objSelectCmd.Parameters.Add("p_nit", MySqlDbType.VarString).Value = _nit;
+            objSelectCmd.Parameters.Add("p_name", MySqlDbType.VarString).Value = _name;
 
             try
             {
@@ -98,20 +69,21 @@ namespace Data
             }
             objPer.closeConnection();
             return executed;
-
         }
 
-        //Metodo para borrar una Categoria
-        public bool deleteCategory(int _idCategory)
+        //Metodo para actualizar un Proveedor
+        public bool updateProvider(int _id, string _nit, string _name)
         {
             bool executed = false;
             int row;
 
             MySqlCommand objSelectCmd = new MySqlCommand();
             objSelectCmd.Connection = objPer.openConnection();
-            objSelectCmd.CommandText = "spDeleteCategory"; //nombre del procedimiento almacenado
+            objSelectCmd.CommandText = "spUpdateProvider"; //nombre del procedimiento almacenado
             objSelectCmd.CommandType = CommandType.StoredProcedure;
-            objSelectCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _idCategory;
+            objSelectCmd.Parameters.Add("p_id", MySqlDbType.Int32).Value = _id;
+            objSelectCmd.Parameters.Add("p_nit", MySqlDbType.VarString).Value = _nit;
+            objSelectCmd.Parameters.Add("p_name", MySqlDbType.VarString).Value = _name;
 
             try
             {
@@ -127,7 +99,6 @@ namespace Data
             }
             objPer.closeConnection();
             return executed;
-
         }
     }
 }
